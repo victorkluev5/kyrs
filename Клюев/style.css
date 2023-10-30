@@ -1,0 +1,25 @@
+QWidget{
+    background: rgb(181, 131, 90);
+ }
+ 
+ QLabel{
+    font-size: 15px;
+    /* font-weight: bold; */
+    color:rgb(0, 0, 0)
+ }
+ 
+ QPushButton{
+    font-size: 12px;
+    background: rgb(205, 171, 143);
+    /* border:1px;
+    border-radius: 15px;
+    min-width: 100px;
+    min-height: 50px; */
+    
+ }
+ 
+ QLineEdit{
+    font-size:20px;
+    border-radius: 15px;
+    background: #fdeedd;
+ }
