@@ -8,6 +8,7 @@ import income
 from PyQt5.QtSql import QSqlDatabase, QSqlQueryModel, QSqlTableModel, QSqlQuery
 from PyQt5.QtCore import *
 import random
+from capth import Captcha
 
 class Auth(auth.Auth):
     def __init__(self):
@@ -23,62 +24,65 @@ class Auth(auth.Auth):
             self.admin.show()
             self.close()
         else:
-            self.test = Captcha()
-            self.test.show()
+            QMessageBox.critical(self, "ОШИБКА", "Ошибка")
+            self.sw = Captcha()
+            self.sw.setupUi(self.sw)
+            self.sw.show()
 
     def Exit(self):
         exe.close()
 
-class Captcha(QMainWindow):
-    def __init__(self):
-        super().__init__()
-        self.setWindowModality(Qt.WindowModality.ApplicationModal)
-        self.setWindowFlags(Qt.WindowType.FramelessWindowHint)
-        self.setFixedSize(180,150)
-        layout = QVBoxLayout()
+# class Captcha(QMainWindow):
+#     def __init__(self):
+#         super().__init__()
+#         self.setWindowModality(Qt.WindowModality.ApplicationModal)
+#         self.setWindowFlags(Qt.WindowType.FramelessWindowHint)
+#         self.setFixedSize(180,150)
+#         layout = QVBoxLayout()
 
-        self.captcha = QLabel(str(random.randint(1000,9999)))
-        self.captcha_edit = QLineEdit()
-        self.label = QLabel("Каптча")
-        self.captcha_btn = QPushButton("Проверить")
-        self.timer_label = QLabel("Таймер: 10")
-        self.count = 10
-        self.timer_label.setText(str(self.count))
-        self.timer = QTimer()
+#         self.captcha = QLabel(str(random.randint(1000,9999)))
+#         self.captcha_edit = QLineEdit()
+#         self.label = QLabel("Каптча")
+#         self.captcha_btn = QPushButton("Проверить")
+#         self.timer_label = QLabel("Таймер: 10")
+#         self.count = 10
+#         self.timer_label.setText(str(self.count))
+#         self.timer = QTimer()
 
-        layout.addWidget(self.label)
-        layout.addWidget(self.captcha)
-        layout.addWidget(self.captcha_btn)
-        layout.addWidget(self.captcha_edit)
-        layout.addWidget(self.timer_label)
+#         layout.addWidget(self.label)
+#         layout.addWidget(self.captcha)
+#         layout.addWidget(self.captcha_btn)
+#         layout.addWidget(self.captcha_edit)
+#         layout.addWidget(self.timer_label)
 
-        self.captcha_btn.clicked.connect(self.captcha_click)
-        self.timer.timeout.connect(self.timer_tick)
+#         self.captcha_btn.clicked.connect(self.captcha_click)
+#         self.timer.timeout.connect(self.timer_tick)
 
-        widget = QWidget()
-        widget.setLayout(layout)
-        self.setCentralWidget(widget)
+#         widget = QWidget()
+#         widget.setLayout(layout)
+#         self.setCentralWidget(widget)
 
-        with open ('style.css') as style:
-            self.setStyleSheet(style.read())
+#         with open ('style.css') as style:
+#             self.setStyleSheet(style.read())
 
-    def captcha_click(self):
-        if self.captcha_edit.text() == self.captcha.text():
-            QMessageBox.information(self, "Верно", "Верно")
-            Captcha.close(self)
-        else:
-            self.captcha_edit.setDisabled(True)
-            self.timer.start()
-            QMessageBox.critical(self, "Ошибка", "Ошибка")  
+#     def captcha_click(self):
+#         if self.captcha_edit.text() == self.captcha.text():
+#             QMessageBox.information(self, "Верно", "Верно")
+#             Captcha.close(self)
+#         else:
+#             self.captcha_edit.setDisabled(True)
+#             self.timer.start()
+#             QMessageBox.critical(self, "Ошибка", "Ошибка")  
 
-    def timer_tick(self):
-        self.timer.start(1000)
-        self.count -= 1
-        self.timer_label.setText(str(self.count))
+#     def timer_tick(self):
+#         self.timer.start(1000)
+#         self.count -= 1
+#         self.timer_label.setText(str(self.count))
 
-        if self.count == 0:
-            self.timer.stop()
-            self.captcha_edit.setDisabled(False) 
+#         if self.count == 0:
+#             self.timer.stop()
+#             self.count =10
+#             self.captcha_edit.setDisabled(False)
 
 class Admin(admin.Admin):
     def __init__(self):
