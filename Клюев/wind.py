@@ -105,11 +105,31 @@ class Admin(admin.Admin):
         
         self.pushButton.clicked.connect(self.Income)
         self.pushButton_exit.clicked.connect(self.Exit)
+        self.pushButton_del.clicked.connect(self.Delete)
         self.pushButton_2.clicked.connect(self.Form)
 
     def Income(self):
         self.income = Income(self.db, self.tableView)
         self.income.show()
+
+    def Delete(self):
+        query = QSqlTableModel()
+        query.setTable("company")
+        query.select()
+        selected = self.tableView.selectedIndexes()
+
+        rows = set(index.row() for index in selected)
+        rows = list(rows)
+        rows.sort()
+        first = rows[0]
+
+        query.removeRow(first)
+        query.select()
+
+        query = QSqlTableModel()
+        query.setTable("company")
+        query.select()
+        self.tableView.setModel(query)
 
     def Form(self):
         pass
