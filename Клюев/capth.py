@@ -61,18 +61,18 @@ class Captcha(QMainWindow):
         self.lineEdit_kapcha.setFont(font)
         self.lineEdit_kapcha.setStyleSheet("background-color: rgb(246, 245, 244);")
         self.lineEdit_kapcha.setObjectName("lineEdit_kapcha")
-        self.pushButton = QtWidgets.QPushButton(self.centralwidget)
-        self.pushButton.setGeometry(QtCore.QRect(60, 200, 101, 26))
+        self.pushButton_1 = QtWidgets.QPushButton(self.centralwidget)
+        self.pushButton_1.setGeometry(QtCore.QRect(60, 200, 101, 26))
         font = QtGui.QFont()
         font.setFamily("Open Sans")
         font.setPointSize(10)
         font.setBold(False)
         font.setItalic(False)
         font.setWeight(50)
-        self.pushButton.setFont(font)
-        self.pushButton.setStyleSheet("font: 10pt \"Open Sans\";\n"
+        self.pushButton_1.setFont(font)
+        self.pushButton_1.setStyleSheet("font: 10pt \"Open Sans\";\n"
 "background-color: rgb(181, 131, 90)")
-        self.pushButton.setObjectName("pushButton")
+        self.pushButton_1.setObjectName("pushButton")
         self.label_Time = QtWidgets.QLabel(self.centralwidget)
         self.label_Time.setGeometry(QtCore.QRect(70, 150, 81, 31))
         font = QtGui.QFont()
@@ -94,7 +94,7 @@ class Captcha(QMainWindow):
         MainWindow.setWindowTitle(_translate("MainWindow", "MainWindow"))
         self.label.setText(_translate("MainWindow", "<html><head/><body><p align=\"center\"><span style=\" font-size:12pt;\">Введите капчу:</span></p></body></html>"))
         self.label_Kapcha.setText(_translate("MainWindow", "54567"))
-        self.pushButton.setText(_translate("MainWindow", "Проверить"))
+        self.pushButton_1.setText(_translate("MainWindow", "Проверить"))
         self.label_Time.setText(_translate("MainWindow", "<html><head/><body><p align=\"center\"><br/></p></body></html>"))
 
 
@@ -109,7 +109,7 @@ class Captcha(QMainWindow):
         self.label_Time.setText(str(self.count))
         self.timer.timeout.connect(self.timer_tick)
         
-        self.pushButton.clicked.connect(self.ver)
+        self.pushButton_1.clicked.connect(self.ver)
         
     
     def ver (self):

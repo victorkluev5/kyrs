@@ -1,94 +1,19 @@
 import sys
-from PyQt5 import QtCore
-from PyQt5.QtSql import QSqlDatabase,QSqlQuery, QSqlQueryModel
-from PyQt5.QtWidgets import QApplication, QWidget, QTableView, QMainWindow, QVBoxLayout, QLabel, QLineEdit, QPushButton, QMessageBox
+from PyQt5.QtSql import QSqlDatabase, QSqlQueryModel, QSqlQuery
+from PyQt5.QtWidgets import QApplication, QMessageBox
 import auth
 import admin
 import income
-from PyQt5.QtSql import QSqlDatabase, QSqlQueryModel, QSqlTableModel, QSqlQuery
+import user
+# import random
+from PyQt5.QtSql import QSqlDatabase, QSqlQueryModel, QSqlTableModel
 from PyQt5.QtCore import *
-import random
 from capth import Captcha
 
 class Auth(auth.Auth):
     def __init__(self):
         super().__init__()
         self.setupUi(self)
-
-        self.btn_auth.clicked.connect(self.Enter)
-        self.btn_exit.clicked.connect(self.Exit)
-
-    def Enter(self):
-        if self.lineEdit.text() == "admin" and self.lineEdit_password.text() == "admin":
-            self.admin = Admin()
-            self.admin.show()
-            self.close()
-        else:
-            QMessageBox.critical(self, "ОШИБКА", "Ошибка")
-            self.sw = Captcha()
-            self.sw.setupUi(self.sw)
-            self.sw.show()
-
-    def Exit(self):
-        exe.close()
-
-# class Captcha(QMainWindow):
-#     def __init__(self):
-#         super().__init__()
-#         self.setWindowModality(Qt.WindowModality.ApplicationModal)
-#         self.setWindowFlags(Qt.WindowType.FramelessWindowHint)
-#         self.setFixedSize(180,150)
-#         layout = QVBoxLayout()
-
-#         self.captcha = QLabel(str(random.randint(1000,9999)))
-#         self.captcha_edit = QLineEdit()
-#         self.label = QLabel("Каптча")
-#         self.captcha_btn = QPushButton("Проверить")
-#         self.timer_label = QLabel("Таймер: 10")
-#         self.count = 10
-#         self.timer_label.setText(str(self.count))
-#         self.timer = QTimer()
-
-#         layout.addWidget(self.label)
-#         layout.addWidget(self.captcha)
-#         layout.addWidget(self.captcha_btn)
-#         layout.addWidget(self.captcha_edit)
-#         layout.addWidget(self.timer_label)
-
-#         self.captcha_btn.clicked.connect(self.captcha_click)
-#         self.timer.timeout.connect(self.timer_tick)
-
-#         widget = QWidget()
-#         widget.setLayout(layout)
-#         self.setCentralWidget(widget)
-
-#         with open ('style.css') as style:
-#             self.setStyleSheet(style.read())
-
-#     def captcha_click(self):
-#         if self.captcha_edit.text() == self.captcha.text():
-#             QMessageBox.information(self, "Верно", "Верно")
-#             Captcha.close(self)
-#         else:
-#             self.captcha_edit.setDisabled(True)
-#             self.timer.start()
-#             QMessageBox.critical(self, "Ошибка", "Ошибка")  
-
-#     def timer_tick(self):
-#         self.timer.start(1000)
-#         self.count -= 1
-#         self.timer_label.setText(str(self.count))
-
-#         if self.count == 0:
-#             self.timer.stop()
-#             self.count =10
-#             self.captcha_edit.setDisabled(False)
-
-class Admin(admin.Admin):
-    def __init__(self):
-        super().__init__()
-        self.setupUi(self)
-
         db = QSqlDatabase.addDatabase('QPSQL')
         db.setDatabaseName('doxod')
         db.setHostName('localhost')
@@ -97,6 +22,99 @@ class Admin(admin.Admin):
         db.setPassword('student')
         db.open()
         self.db = db
+
+        self.btn_auth.clicked.connect(self.Enter)
+        self.btn_exit.clicked.connect(self.Exit)
+
+        
+
+    def Enter(self):
+        # if self.lineEdit.text() == "admin" and self.lineEdit_password.text() == "admin":
+        #     self.admin = Admin()
+        #     self.admin.show()
+        #     self.close()
+        query = QSqlQuery()
+        query.exec(f"SELECT * FROM public.profile WHERE login = '{self.lineEdit.text()}' AND password = '{self.lineEdit_password.text()}'")
+        print(self.lineEdit.text(), self.lineEdit_password.text())
+        
+        if query.first():
+            if query.value(3) == 1:
+                self.sw = Admin()
+                self.sw.show()
+                self.close()
+            
+            elif query.value(3) == 2:
+                self.sw = User()
+                self.sw.show()
+                self.close()
+
+        else:
+            QMessageBox.critical(self, "ОШИБКА", "Ошибка")
+            self.sw = Captcha()
+            self.sw.setupUi(self.sw)
+            self.sw.show()
+
+    def Exit(self):
+        self.close()
+
+class User(user.User):
+    def __init__(self):
+        super().__init__()
+        self.setupUi(self)
+
+        query = QSqlQueryModel()
+        sql = "SELECT * FROM public.company"
+        query.setQuery(sql)
+        self.tableView.setModel(query)
+        self.tableView.setColumnHidden(0, True)
+
+        self.pushButton_exit1.clicked.connect(self.Exit1)
+
+    def Exit1(self):
+        self.close()
+
+# class Captcha1(Captcha):
+#     def __init__(self):
+#         super().__init__()
+        
+    
+#         # self.setupUi(self)
+#         self.setWindowFlags(Qt.FramelessWindowHint)
+#         self.label_Kapcha.setText(str(random.randint(1000,9000)))
+        
+#         self.timer = QTimer()
+#         self.count = 10
+#         self.label_Time.setText(str(self.count))
+#         self.timer.timeout.connect(self.Timer_tick)
+        
+#         self.pushButton_1.clicked.connect(self.Capath)
+        
+    
+#     def Capath (self):
+#         if self.lineEdit_kapcha.text() == self.label_Kapcha.text():
+#             QMessageBox.information(self, "Успех", "Капча введена правильно")
+#             self.close()
+#         else:
+#             self.lineEdit_kapcha.setDisabled(True)
+#             self.timer.start()
+#             QMessageBox.critical(self, "ОШИБКА", "Вы ввели неправильно")
+#             self.Timer_tick()
+            
+#     def Timer_tick(self):
+#         self.timer.start(1000)
+#         self.count -=1
+#         self.label_Time.setText(str(self.count))
+        
+#         if  self.count == 0:
+#             self.timer.stop()
+#             self.count =10
+#             self.lineEdit_kapcha.setDisabled(False)
+
+class Admin(admin.Admin):
+    def __init__(self):
+        super().__init__()
+        self.setupUi(self)
+
         query = QSqlQueryModel()
         sql = "SELECT * FROM public.company"
         query.setQuery(sql)
@@ -150,9 +168,8 @@ class Income(income.Income):
 
     def Doxod(self):
         model = QSqlQueryModel()
-        # q = QSqlQuery()
-        model.setQuery(f"INSERT INTO public.company (organization, income) VALUES ('{self.lineEdit_ip.text()}', '{self.lineEdit_income.text()}')")
-        # print(q.isActive())
+        date = f"{str(self.dateEdit.date().day())}.{str(self.dateEdit.date().month())}.{str(self.dateEdit.date().year())}"
+        model.setQuery(f"INSERT INTO public.company (organization, income, data) VALUES ('{self.lineEdit_ip.text()}', '{self.lineEdit_income.text()}', '{date}')")
         model.clear()
         model.setQuery("SELECT * FROM public.company")
         self.tableView.setModel(model)
